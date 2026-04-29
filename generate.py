@@ -219,6 +219,23 @@ class CrosswordCreator():
         The first value in the list, for example, should be the one
         that rules out the fewest values among the neighbors of `var`.
         """
+        words = self.domains[var]
+        ruleout_counts_list = []
+        neighbors = self.crossword.neighbors(var)
+
+        for word in words:
+            ruleout_counts = 0
+            for n in neighbors:
+                if assignment.get(n) is None: # only calculate the not-yet-assigned neighbors
+                    overlap = self.crossword.overlap[var, n]                
+                    if overlap is not None:
+                        xi, yi = overlap
+                        for word_y in self.domains[n]:
+                            if word[xi] != word_y[yi]:
+                                ruleout_counts += 1
+            ruleout_counts_list.append((ruleout_counts, word))
+
+
         raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
