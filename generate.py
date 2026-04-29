@@ -1,7 +1,7 @@
 import sys
 
 from crossword import *
-
+from collections import deque
 
 class CrosswordCreator():
 
@@ -105,7 +105,7 @@ class CrosswordCreator():
         for var in self.domains:
             # only keep those words length match
             self.domains[var] = [word for word in self.domains[var] if len(word) == var.length ]
-            print(self.domains[var])
+            #  print(self.domains[var])
         
 
     def revise(self, x, y):
@@ -118,7 +118,7 @@ class CrosswordCreator():
         False if no revision was made.
         """
         revised = False
-        overlap = self.crossword.overlaps(x, y)
+        overlap = self.crossword.overlaps[x, y]
         if overlap == None:
             return False
         else:
@@ -148,7 +148,29 @@ class CrosswordCreator():
         Return True if arc consistency is enforced and no domains are empty;
         return False if one or more domains end up empty.
         """
-        raise NotImplementedError
+        # create the default arcs
+        if arcs == None:
+            arcs = deque()
+            for var in self.domains:
+                neighbors = self.crossword.neighbors(var)
+                if neighbors != None:
+                    for v in neighbors:
+                        arcs.append((var, v))
+
+        while arcs:
+            arc = arcs.popleft()        
+            x, y = arc
+            revised = self.revise(x, y)
+            if revised:
+                if not self.domains[x]:
+                    return False
+                # find out the neighbors of x and add them with respect to x to the queue
+                x_neighbors = self.crossword.neighbors(x)
+                for x_n in x_neighbors:
+                    if x_n != y:
+                        arcs.append((x_n, x))
+        return True
+        
 
     def assignment_complete(self, assignment):
         """
