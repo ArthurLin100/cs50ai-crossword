@@ -2,6 +2,7 @@ import sys
 
 from crossword import *
 
+
 class CrosswordCreator():
 
     def __init__(self, crossword):
@@ -106,7 +107,6 @@ class CrosswordCreator():
             self.domains[var] = {word for word in self.domains[var] if len(word) == var.length}
             #  print(self.domains[var])
         
-
     def revise(self, x, y):
         """
         Make variable `x` arc consistent with variable `y`.
@@ -136,7 +136,6 @@ class CrosswordCreator():
             self.domains[x] = x_words
         
         return revised
-
 
     def ac3(self, arcs=None):
         """
@@ -170,7 +169,6 @@ class CrosswordCreator():
                         arcs.append((x_n, x))
         return True
         
-
     def assignment_complete(self, assignment):
         """
         Return True if `assignment` is complete (i.e., assigns a value to each
@@ -182,7 +180,6 @@ class CrosswordCreator():
                         
         return True
         
-
     def consistent(self, assignment):
         """
         Return True if `assignment` is consistent (i.e., words fit in crossword
@@ -225,7 +222,7 @@ class CrosswordCreator():
         for word in words:
             ruleout_counts = 0
             for n in neighbors:
-                if assignment.get(n) is None: # only calculate the not-yet-assigned neighbors
+                if assignment.get(n) is None:  # only calculate the not-yet-assigned neighbors
                     overlap = self.crossword.overlaps[var, n]
                     if overlap is not None:
                         xi, yi = overlap
@@ -235,9 +232,8 @@ class CrosswordCreator():
             ruleout_counts_list.append((ruleout_counts, word))
 
         # sort the list
-        ruleout_counts_list.sort(key=lambda x:x[0])
+        ruleout_counts_list.sort(key=lambda x: x[0])
         return [item[1] for item in ruleout_counts_list]
-
 
     def select_unassigned_variable(self, assignment):
         """
@@ -254,9 +250,9 @@ class CrosswordCreator():
                 neighbors = self.crossword.neighbors(var)
                 var_cnt_list.append((var, len(words), len(neighbors)))
 
-        var_cnt_list.sort(key=lambda x:(x[1], -x[2]))  # x[1] is number of remaining values. x[2] is degree
+        # x[1] is number of remaining values. x[2] is degree
+        var_cnt_list.sort(key=lambda x: (x[1], -x[2]))
         return var_cnt_list[0][0]
-
 
     def backtrack(self, assignment):
         """
