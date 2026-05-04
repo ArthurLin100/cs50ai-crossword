@@ -227,7 +227,7 @@ class CrosswordCreator():
             ruleout_counts = 0
             for n in neighbors:
                 if assignment.get(n) is None: # only calculate the not-yet-assigned neighbors
-                    overlap = self.crossword.overlap[var, n]                
+                    overlap = self.crossword.overlap[var, n]          
                     if overlap is not None:
                         xi, yi = overlap
                         for word_y in self.domains[n]:
@@ -235,8 +235,10 @@ class CrosswordCreator():
                                 ruleout_counts += 1
             ruleout_counts_list.append((ruleout_counts, word))
 
+        # sort the list
+        ruleout_counts_list.sort(key=lambda x:x[0])
+        return [item[1] for item in ruleout_counts_list]
 
-        raise NotImplementedError
 
     def select_unassigned_variable(self, assignment):
         """
