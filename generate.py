@@ -209,8 +209,7 @@ class CrosswordCreator():
         assigned_words = [word for word in assignment.values() if word is not None]
         if len(assigned_words) != len(set(assigned_words)):
             return False
-
-        raise NotImplementedError
+        
 
     def order_domain_values(self, var, assignment):
         """
@@ -227,7 +226,7 @@ class CrosswordCreator():
             ruleout_counts = 0
             for n in neighbors:
                 if assignment.get(n) is None: # only calculate the not-yet-assigned neighbors
-                    overlap = self.crossword.overlap[var, n]          
+                    overlap = self.crossword.overlaps[var, n]
                     if overlap is not None:
                         xi, yi = overlap
                         for word_y in self.domains[n]:
@@ -268,7 +267,22 @@ class CrosswordCreator():
 
         If no assignment is possible, return None.
         """
-        raise NotImplementedError
+        # check if the assignment is complete
+        if self.assignment_complete(assignment):
+            return assignment
+                
+        var = self.select_unassigned_variable(assignment)        
+        for value in self.order_domain_values(var, assignment):
+            assignment[var] = value
+            if self.consistent(assignment):                
+                result = self.backtrack(assignment)
+                if result is not None:
+                    return result
+            else:
+                assignment[var] = None
+        assignment[var] = None
+        
+        return None
 
 
 def main():
