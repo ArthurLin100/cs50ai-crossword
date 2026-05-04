@@ -209,6 +209,7 @@ class CrosswordCreator():
         if len(assigned_words) != len(set(assigned_words)):
             return False
         
+        return True
 
     def order_domain_values(self, var, assignment):
         """
