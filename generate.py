@@ -1,7 +1,6 @@
 import sys
 
 from crossword import *
-from collections import deque
 
 class CrosswordCreator():
 
@@ -104,7 +103,7 @@ class CrosswordCreator():
         
         for var in self.domains:
             # only keep those words length match
-            self.domains[var] = [word for word in self.domains[var] if len(word) == var.length ]
+            self.domains[var] = {word for word in self.domains[var] if len(word) == var.length}
             #  print(self.domains[var])
         
 
@@ -149,8 +148,8 @@ class CrosswordCreator():
         return False if one or more domains end up empty.
         """
         # create the default arcs
-        if arcs == None:
-            arcs = deque()
+        if arcs is None:
+            arcs = []
             for var in self.domains:
                 neighbors = self.crossword.neighbors(var)
                 if neighbors != None:
@@ -158,7 +157,7 @@ class CrosswordCreator():
                         arcs.append((var, v))
 
         while arcs:
-            arc = arcs.popleft()        
+            arc = arcs.pop(0)
             x, y = arc
             revised = self.revise(x, y)
             if revised:
